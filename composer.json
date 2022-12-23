@@ -1,0 +1,19 @@
+{
+    "authors": [
+        {
+            "name": "Vildan Hakanaj",
+            "email": "vildanhakanaj@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "VildanHakanaj\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests"
+        }
+    },
+    "require": {}
+}
