@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php"
+         cacheResultFile=".phpunit.cache/test-results"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         convertDeprecationsToExceptions="true"
+         verbose="true">
+    <testsuites>
+        <testsuite name="Options suit">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
