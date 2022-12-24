@@ -31,6 +31,19 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
+    public function it_can_only_set_key_if_not_present_in_array()
+    {
+        $this->options->addIfUnique("uniqueKey", "uniqueValue");
+        $this->options->addIfUnique("key1", "alreadyExists");q
+
+        $this->assertSame("uniqueValue", $this->options->get("uniqueKey"));
+        $this->assertNotSame("alreadyExists", $this->options->get("key1"));
+        $this->assertSame("value1", $this->options->get("key1"));
+    }
+
+    /**
+     * @test
+     */
     public function it_can_get_all_the_keys()
     {
         $this->assertSame([
@@ -128,7 +141,8 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
-    public function it_can_unset_key_from_options_as_array(){
+    public function it_can_unset_key_from_options_as_array()
+    {
         unset($this->options["key1"]);
         $this->assertNull($this->options->get("key1"));
     }

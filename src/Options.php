@@ -74,6 +74,22 @@ class Options implements \ArrayAccess
     }
 
     /**
+     * Will add the key value only if the key is not already in the options array.
+     * @param string $key
+     * @param $value
+     * @return $this
+     */
+    public function addIfUnique(string $key, $value): Options
+    {
+        if($this->has($key)){
+            return $this;
+        }
+
+        $this->options[$key] = $value;
+        return $this;
+    }
+
+    /**
      * Check if the given key exists in options array.
      * @param string $key
      * @return bool
