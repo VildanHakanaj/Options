@@ -59,6 +59,20 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
+    public function it_can_get_a_item_by_key(){
+        $this->assertSame("value1", $this->options->get("key1"));
+    }
+
+    /**
+     * @test
+     */
+    public function it_returns_null_if_key_not_found(){
+        $this->assertNull($this->options->get("noKey"));
+    }
+
+    /**
+     * @test
+     */
     public function it_can_merge_an_array()
     {
         $this->options->merge([
@@ -104,7 +118,6 @@ class OptionsTest extends TestCase
         $this->assertSame(["key" => "value"], $result);
     }
 
-
     protected function data(): array
     {
         return [
@@ -114,5 +127,4 @@ class OptionsTest extends TestCase
             "key4" => "value4",
         ];
     }
-
 }

@@ -79,4 +79,13 @@ class Options
         return $this;
     }
 
+    public function get(string $key)
+    {
+        if(!isset($this->options[$key])){
+            return null;
+        }
+
+        return $this->options[$key];
+    }
+
 }
