@@ -34,7 +34,7 @@ class OptionsTest extends TestCase
     public function it_can_only_set_key_if_not_present_in_array()
     {
         $this->options->addIfUnique("uniqueKey", "uniqueValue");
-        $this->options->addIfUnique("key1", "alreadyExists");q
+        $this->options->addIfUnique("key1", "alreadyExists");
 
         $this->assertSame("uniqueValue", $this->options->get("uniqueKey"));
         $this->assertNotSame("alreadyExists", $this->options->get("key1"));
