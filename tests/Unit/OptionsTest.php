@@ -73,6 +73,14 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
+    public function it_check_if_the_options_has_the_key(){
+        $this->assertTrue($this->options->has("key1"));
+        $this->assertFalse($this->options->has("notFound"));
+    }
+
+    /**
+     * @test
+     */
     public function it_can_merge_an_array()
     {
         $this->options->merge([

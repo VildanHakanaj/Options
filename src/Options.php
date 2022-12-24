@@ -9,7 +9,8 @@ class Options
 
     private array $options;
 
-    public function __construct(array $options = []){
+    public function __construct(array $options = [])
+    {
         $this->options = $options;
     }
 
@@ -38,6 +39,30 @@ class Options
     public function values(): array
     {
         return array_values($this->options);
+    }
+
+    /**
+     * <p>Return the value for the given key</p> <p>or <b>NULL</b> if the key is not present</p>
+     * @param string $key
+     * @return mixed|null
+     */
+    public function get(string $key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+
+        return $this->options[$key];
+    }
+
+    /**
+     * Check if the given key exists in options array.
+     * @param string $key
+     * @return bool
+     */
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->options);
     }
 
     /**
@@ -76,19 +101,4 @@ class Options
         $this->options = $options;
         return $this;
     }
-
-    /**
-     * <p>Return the value for the given key</p> <p>or <b>NULL</b> if the key is not present</p>
-     * @param string $key
-     * @return mixed|null
-     */
-    public function get(string $key)
-    {
-        if(!isset($this->options[$key])){
-            return null;
-        }
-
-        return $this->options[$key];
-    }
-
 }
