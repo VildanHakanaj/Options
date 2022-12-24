@@ -4,16 +4,33 @@
 namespace VildanHakanaj;
 
 
-class Options
+class Options implements \ArrayAccess
 {
 
     private array $options;
 
-    public function __construct(array $options = []){
+    public function __construct(array $options = [])
+    {
         $this->options = $options;
     }
 
+    /**
+     * @param $key
+     * @return mixed|null
+     */
+    public function __get($key)
+    {
+        return $this->get($key);
+    }
 
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function __set($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
 
     /**
      * Get all the options as an array
@@ -40,6 +57,46 @@ class Options
     public function values(): array
     {
         return array_values($this->options);
+    }
+
+    /**
+     * <p>Return the value for the given key</p> <p>or <b>NULL</b> if the key is not present</p>
+     * @param string $key
+     * @return mixed|null
+     */
+    public function get(string $key)
+    {
+        if (!$this->has($key)) {
+            return null;
+        }
+
+        return $this->options[$key];
+    }
+
+    /**
+     * Will add the key value only if the key is not already in the options array.
+     * @param string $key
+     * @param $value
+     * @return $this
+     */
+    public function addIfUnique(string $key, $value): Options
+    {
+        if($this->has($key)){
+            return $this;
+        }
+
+        $this->options[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Check if the given key exists in options array.
+     * @param string $key
+     * @return bool
+     */
+    public function has(string $key): bool
+    {
+        return array_key_exists($key, $this->options);
     }
 
     /**
@@ -79,13 +136,23 @@ class Options
         return $this;
     }
 
-    public function get(string $key)
+    public function offsetExists($offset): bool
     {
-        if(!isset($this->options[$key])){
-            return null;
-        }
-
-        return $this->options[$key];
+        return $this->has($offset);
     }
 
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->mergeKey($offset, $value);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->options[$offset]);
+    }
 }
