@@ -13,8 +13,6 @@ class Options
         $this->options = $options;
     }
 
-
-
     /**
      * Get all the options as an array
      * @return array
@@ -79,6 +77,11 @@ class Options
         return $this;
     }
 
+    /**
+     * <p>Return the value for the given key</p> <p>or <b>NULL</b> if the key is not present</p>
+     * @param string $key
+     * @return mixed|null
+     */
     public function get(string $key)
     {
         if(!isset($this->options[$key])){
