@@ -4,7 +4,7 @@
 namespace VildanHakanaj;
 
 
-class Options implements \ArrayAccess
+class Options implements \ArrayAccess, \Iterator
 {
 
     private array $options;
@@ -154,5 +154,30 @@ class Options implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->options[$offset]);
+    }
+
+    public function current()
+    {
+        return current($this->options);
+    }
+
+    public function next()
+    {
+        next($this->options);
+    }
+
+    public function key()
+    {
+        return key($this->options);
+    }
+
+    public function valid(): bool
+    {
+        return current($this->options) !== false;
+    }
+
+    public function rewind()
+    {
+        reset($this->options);
     }
 }

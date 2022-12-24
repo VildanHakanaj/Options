@@ -196,6 +196,25 @@ class OptionsTest extends TestCase
         $this->assertSame(["key" => "value"], $result);
     }
 
+    /**
+     * @test
+     */
+    public function it_can_loop_over_options_in_foreach(){
+        $options = new Options([
+            "showRightRail" => true,
+            "pageTitle" => "Page Title"
+        ]);
+
+        $result = [];
+
+        foreach($options as $key => $value){
+            var_dump($key, $value);
+            $result[$key] = $value;
+        }
+
+        $this->assertSame(["showRightRail" => true, "pageTitle" => "Page Title"], $result);
+
+    }
     protected function data(): array
     {
         return [
