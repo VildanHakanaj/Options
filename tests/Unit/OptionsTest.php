@@ -59,23 +59,44 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
-    public function it_can_get_a_item_by_key(){
+    public function it_can_get_a_item_by_key()
+    {
         $this->assertSame("value1", $this->options->get("key1"));
     }
 
     /**
      * @test
      */
-    public function it_returns_null_if_key_not_found(){
+    public function it_returns_null_if_key_not_found()
+    {
         $this->assertNull($this->options->get("noKey"));
     }
 
     /**
      * @test
      */
-    public function it_check_if_the_options_has_the_key(){
+    public function it_check_if_the_options_has_the_key()
+    {
         $this->assertTrue($this->options->has("key1"));
         $this->assertFalse($this->options->has("notFound"));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_get_value_using_magic_getters()
+    {
+        $this->assertSame("value1", $this->options->key1);
+        $this->assertNull($this->options->notFound);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_set_value_using_magic_setter()
+    {
+        $this->options->magicKey = "magicValue";
+        $this->assertSame("magicValue", $this->options->get("magicKey"));
     }
 
     /**
@@ -99,7 +120,8 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
-    public function it_can_merge_a_key_value(){
+    public function it_can_merge_a_key_value()
+    {
         $results = $this->options
             ->mergeKey("newKey", "newValue")
             ->mergeKey("key1", "overrideValue1")->all();

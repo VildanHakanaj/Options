@@ -15,6 +15,24 @@ class Options
     }
 
     /**
+     * @param $key
+     * @return mixed|null
+     */
+    public function __get($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function __set($key, $value)
+    {
+        $this->options[$key] = $value;
+    }
+
+    /**
      * Get all the options as an array
      * @return array
      */
