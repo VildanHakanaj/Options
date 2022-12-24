@@ -102,6 +102,40 @@ class OptionsTest extends TestCase
     /**
      * @test
      */
+    public function it_can_get_a_value_using_options_as_array()
+    {
+        $this->assertSame("value1", $this->options["key1"]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_check_if_key_isset_as_an_array()
+    {
+        $this->assertTrue(isset($this->options["key1"]));
+        $this->assertFalse(isset($this->options["notFound"]));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_check_set_key_value_as_array()
+    {
+        $this->options["newKey"] = "newValue";
+        $this->assertSame("newValue", $this->options->get("newKey"));
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_unset_key_from_options_as_array(){
+        unset($this->options["key1"]);
+        $this->assertNull($this->options->get("key1"));
+    }
+
+    /**
+     * @test
+     */
     public function it_can_merge_an_array()
     {
         $this->options->merge([
