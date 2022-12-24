@@ -208,7 +208,6 @@ class OptionsTest extends TestCase
         $result = [];
 
         foreach($options as $key => $value){
-            var_dump($key, $value);
             $result[$key] = $value;
         }
 
