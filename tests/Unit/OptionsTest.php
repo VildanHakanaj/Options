@@ -3,7 +3,7 @@
 namespace Unit;
 
 use PHPUnit\Framework\TestCase;
-use VildanHakanaj\Options;
+use VildanHakanaj\Options\Options;
 
 class OptionsTest extends TestCase
 {

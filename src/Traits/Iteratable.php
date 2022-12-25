@@ -1,7 +1,7 @@
 <?php
 
 
-namespace VildanHakanaj\Traits;
+namespace VildanHakanaj\Options\Traits;
 
 
 trait Iteratable

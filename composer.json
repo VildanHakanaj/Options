@@ -1,21 +1,29 @@
 {
+    "name": "vildanhakanaj/php-options",
+    "description": "Simple way to interact with an options array in your website",
     "authors": [
         {
             "name": "Vildan Hakanaj",
             "email": "vildanhakanaj@gmail.com"
         }
     ],
+    "type": "library",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "VildanHakanaj\\": "src"
+            "VildanHakanaj\\Options\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\": "tests/"
+            "VildanHakanaj\\Test\\": "tests/"
         }
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
-    }
+    },
+    "require": {
+        "php": "^7.4"
+    },
+    "minimum-stability": "dev"
 }

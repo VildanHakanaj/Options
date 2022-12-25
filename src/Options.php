@@ -1,12 +1,12 @@
 <?php
 
 
-namespace VildanHakanaj;
+namespace VildanHakanaj\Options;
 
 use ArrayAccess;
 use Iterator;
-use VildanHakanaj\Traits\Arrayable;
-use VildanHakanaj\Traits\Iteratable;
+use VildanHakanaj\Options\Traits\Arrayable;
+use VildanHakanaj\Options\Traits\Iteratable;
 
 class Options implements ArrayAccess, Iterator
 {
