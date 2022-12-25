@@ -140,4 +140,12 @@ class Options implements ArrayAccess, Iterator
         $this->options = $options;
         return $this;
     }
+
+    /**
+     * Convert the options into json
+     * @return false|string
+     */
+    public function toJson($flags = null){
+        return json_encode($this->options, $flags);
+    }
 }
