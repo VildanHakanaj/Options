@@ -3,22 +3,8 @@
 
 namespace VildanHakanaj\Options;
 
-use ArrayAccess;
-use Iterator;
-use PhpParser\Node\Expr\Closure;
-use VildanHakanaj\Options\Traits\Arrayable;
-use VildanHakanaj\Options\Traits\Iteratable;
-
-class Options implements ArrayAccess, Iterator
+class Options extends Collection
 {
-    use Iteratable, Arrayable;
-
-    private array $options;
-
-    public function __construct(array $options = [])
-    {
-        $this->options = $options;
-    }
 
     /**
      * Static constructor with array
@@ -28,24 +14,6 @@ class Options implements ArrayAccess, Iterator
     public static function fromArray(array $options): Options
     {
         return new self($options);
-    }
-
-    /**
-     * @param $key
-     * @return mixed|null
-     */
-    public function __get($key)
-    {
-        return $this->get($key);
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     */
-    public function __set($key, $value)
-    {
-        $this->options[$key] = $value;
     }
 
     /**
@@ -76,17 +44,26 @@ class Options implements ArrayAccess, Iterator
     }
 
     /**
-     * <p>Return the value for the given key</p> <p>or <b>NULL</b> if the key is not present</p>
-     * @param string $key
-     * @return mixed|null
+     * @param callable|null $func
+     * @return array
      */
-    public function get(string $key)
+    public function filter(callable $func = null): array
     {
-        if (!$this->has($key)) {
-            return null;
+        if(is_null($func)){
+            return array_filter($this->options);
         }
 
-        return $this->options[$key];
+        return array_filter($this->options, $func);
+    }
+
+    /**
+     * Filters the options by key
+     * @param callable $func
+     * @return array
+     */
+    public function filterByKey(callable $func): array
+    {
+        return array_filter($this->options, $func, ARRAY_FILTER_USE_KEY);
     }
 
     /**
@@ -106,17 +83,7 @@ class Options implements ArrayAccess, Iterator
     }
 
     /**
-     * Check if the given key exists in options array.
-     * @param string $key
-     * @return bool
-     */
-    public function has(string $key): bool
-    {
-        return array_key_exists($key, $this->options);
-    }
-
-    /**
-     * Merges the give array into the options array.
+     * Merges the given array into the options array.
      * If the given array has existing keys in the
      * options array it will override them.
      * @param array $options
@@ -158,27 +125,5 @@ class Options implements ArrayAccess, Iterator
      */
     public function toJson($flags = null){
         return json_encode($this->options, $flags);
-    }
-
-    /**
-     * @param callable|null $func
-     * @return array
-     */
-    public function filter(callable $func = null): array
-    {
-        if(!$func){
-            return array_filter($this->options);
-        }
-
-        return array_filter($this->options, $func);
-    }
-
-    /**
-     * Filters the options by key
-     * @param callable $func
-     */
-    public function filterByKey(callable $func): array
-    {
-        return array_filter($this->options, $func, ARRAY_FILTER_USE_KEY);
     }
 }

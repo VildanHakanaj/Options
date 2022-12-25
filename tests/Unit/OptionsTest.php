@@ -16,13 +16,17 @@ class OptionsTest extends TestCase
 
     /** @test */
     public function it_can_create_options_from_static_constructor(){
+        $options = Options::fromArray([
+            "key1" => "value1",
+            "key2" => "value2"
+        ]);
+
+        $this->assertInstanceOf(Options::class, $options);
+
         $this->assertSame([
             "key1" => "value1",
             "key2" => "value2"
-        ], Options::fromArray([
-            "key1" => "value1",
-            "key2" => "value2"
-        ])->all());
+        ], $options->all());
     }
 
     /** @test */
@@ -40,8 +44,11 @@ class OptionsTest extends TestCase
     /** @test */
     public function it_can_only_set_key_if_not_present_in_array()
     {
-        $this->options->addIfUnique("uniqueKey", "uniqueValue");
-        $this->options->addIfUnique("key1", "alreadyExists");
+        $instance = $this->options->addIfUnique("uniqueKey", "uniqueValue");
+        $instance2 = $this->options->addIfUnique("key1", "alreadyExists");
+
+        $this->assertInstanceOf(Options::class, $instance);
+        $this->assertInstanceOf(Options::class, $instance2);
 
         $this->assertSame("uniqueValue", $this->options->get("uniqueKey"));
         $this->assertNotSame("alreadyExists", $this->options->get("key1"));
@@ -135,10 +142,12 @@ class OptionsTest extends TestCase
     /** @test */
     public function it_can_merge_an_array()
     {
-        $this->options->merge([
+        $options = $this->options->merge([
             "key2" => "override2",
             "key3" => "value3"
         ]);
+
+        $this->assertInstanceOf(Options::class, $options);
 
         $this->assertSame([
             "key1" => "value1",
@@ -151,9 +160,11 @@ class OptionsTest extends TestCase
     /** @test */
     public function it_can_merge_a_key_value()
     {
-        $results = $this->options
+        $options = $this->options
             ->mergeKey("newKey", "newValue")
-            ->mergeKey("key1", "overrideValue1")->all();
+            ->mergeKey("key1", "overrideValue1");
+        $this->assertInstanceOf(Options::class, $options);
+        $results = $options->all();
 
         $this->assertSame([
             "key1" => "overrideValue1",
@@ -196,7 +207,9 @@ class OptionsTest extends TestCase
     /** @test */
     public function it_can_convert_options_into_json()
     {
-        $this->assertSame('{"key1":"value1","key2":"value2","key3":"value3","key4":"value4"}', $this->options->toJson());
+        $json = $this->options->toJson();
+        $this->assertJson($json);
+        $this->assertSame('{"key1":"value1","key2":"value2","key3":"value3","key4":"value4"}', $json);
     }
 
     /** @test */
