@@ -199,6 +199,48 @@ class OptionsTest extends TestCase
         $this->assertSame('{"key1":"value1","key2":"value2","key3":"value3","key4":"value4"}', $this->options->toJson());
     }
 
+    /** @test */
+    public function it_can_filter_options_array(){
+        $options = Options::fromArray([
+            "key1" => false,
+            "key2" => true,
+            "key3" => "value1",
+            "key4" => 0,
+            "key5" => 1
+        ]);
+
+        $this->assertSame([
+            "key1" => false,
+            "key4" => 0,
+        ], $options->filter(fn($option) => !$option));
+
+        $this->assertSame([
+            "key2" => true,
+            "key3" => "value1",
+            "key5" => 1,
+        ], $options->filter());
+    }
+
+    /** @test */
+    public function it_can_filter_options_by_key(){
+
+        $this->options->merge([
+            "key11" => "value11",
+            "key123" => "value123"
+        ]);
+
+        $filteredOptions = $this->options->filterByKey(function($key){
+            return strpos($key, 'key1') !== false;
+        });
+
+        $this->assertSame([
+            "key1" => "value1",
+            "key11" => "value11",
+            "key123" => "value123"
+        ], $filteredOptions);
+
+    }
+
     protected function data(): array
     {
         return [

@@ -5,6 +5,7 @@ namespace VildanHakanaj\Options;
 
 use ArrayAccess;
 use Iterator;
+use PhpParser\Node\Expr\Closure;
 use VildanHakanaj\Options\Traits\Arrayable;
 use VildanHakanaj\Options\Traits\Iteratable;
 
@@ -157,5 +158,27 @@ class Options implements ArrayAccess, Iterator
      */
     public function toJson($flags = null){
         return json_encode($this->options, $flags);
+    }
+
+    /**
+     * @param callable|null $func
+     * @return array
+     */
+    public function filter(callable $func = null): array
+    {
+        if(!$func){
+            return array_filter($this->options);
+        }
+
+        return array_filter($this->options, $func);
+    }
+
+    /**
+     * Filters the options by key
+     * @param callable $func
+     */
+    public function filterByKey(callable $func): array
+    {
+        return array_filter($this->options, $func, ARRAY_FILTER_USE_KEY);
     }
 }
