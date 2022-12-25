@@ -20,6 +20,16 @@ class Options implements ArrayAccess, Iterator
     }
 
     /**
+     * Static constructor with array
+     * @param array $options
+     * @return Options
+     */
+    public static function fromArray(array $options): Options
+    {
+        return new self($options);
+    }
+
+    /**
      * @param $key
      * @return mixed|null
      */

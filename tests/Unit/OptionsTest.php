@@ -15,6 +15,17 @@ class OptionsTest extends TestCase
     }
 
     /** @test */
+    public function it_can_create_options_from_static_constructor(){
+        $this->assertSame([
+            "key1" => "value1",
+            "key2" => "value2"
+        ], Options::fromArray([
+            "key1" => "value1",
+            "key2" => "value2"
+        ])->all());
+    }
+
+    /** @test */
     public function it_can_get_the_options_array()
     {
         $this->assertSame([
