@@ -11,46 +11,80 @@ abstract class Collection implements ArrayAccess, Iterator
 {
     protected array $options;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options = [])
     {
         $this->options = $options;
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function current(): mixed
     {
         return current($this->options);
     }
 
+    /**
+     * @return void
+     */
     public function next(): void
     {
         next($this->options);
     }
 
+    /**
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function key(): mixed
     {
         return key($this->options);
     }
 
+    /**
+     * @return bool
+     */
     public function valid(): bool
     {
         return current($this->options) !== false;
     }
 
+    /**
+     * @return void
+     */
     public function rewind(): void
     {
         reset($this->options);
     }
 
+    /**
+     * @param $offset
+     * @return bool
+     */
     public function offsetExists($offset): bool
     {
         return $this->has($offset);
     }
 
+    /**
+     * @param $offset
+     * @return mixed
+     */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }
 
+    /**
+     * @param $offset
+     * @param $value
+     * @return void
+     */
     public function offsetSet($offset, $value): void
     {
         if(is_null($offset)){
@@ -60,6 +94,10 @@ abstract class Collection implements ArrayAccess, Iterator
         }
     }
 
+    /**
+     * @param $offset
+     * @return void
+     */
     public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
@@ -69,7 +107,7 @@ abstract class Collection implements ArrayAccess, Iterator
      * @param $key
      * @return mixed|null
      */
-    public function __get($key): mixed
+    public function __get($key)
     {
         return $this->get($key);
     }
@@ -88,6 +126,7 @@ abstract class Collection implements ArrayAccess, Iterator
      * @param string $key
      * @return mixed|null
      */
+    #[\ReturnTypeWillChange]
     public function get(string $key): mixed
     {
         if (!$this->has($key)) {
