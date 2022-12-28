@@ -29,7 +29,7 @@ class Options extends Collection
      * Returns all the keys of the options array
      * @return int[]|string[]
      */
-    public function keys()
+    public function keys(): array
     {
         return array_keys($this->options);
     }
@@ -123,7 +123,7 @@ class Options extends Collection
      * Convert the options into json
      * @return false|string
      */
-    public function toJson($flags = null){
+    public function toJson($flags = null): mixed{
         return json_encode($this->options, $flags);
     }
 }

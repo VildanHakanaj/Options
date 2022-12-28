@@ -16,17 +16,17 @@ abstract class Collection implements ArrayAccess, Iterator
         $this->options = $options;
     }
 
-    public function current()
+    public function current(): mixed
     {
         return current($this->options);
     }
 
-    public function next()
+    public function next(): void
     {
         next($this->options);
     }
 
-    public function key()
+    public function key(): mixed
     {
         return key($this->options);
     }
@@ -36,7 +36,7 @@ abstract class Collection implements ArrayAccess, Iterator
         return current($this->options) !== false;
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->options);
     }
@@ -46,12 +46,12 @@ abstract class Collection implements ArrayAccess, Iterator
         return $this->has($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->get($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if(is_null($offset)){
             $this->options[] = $offset;
@@ -60,7 +60,7 @@ abstract class Collection implements ArrayAccess, Iterator
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->options[$offset]);
     }
@@ -69,7 +69,7 @@ abstract class Collection implements ArrayAccess, Iterator
      * @param $key
      * @return mixed|null
      */
-    public function __get($key)
+    public function __get($key): mixed
     {
         return $this->get($key);
     }
@@ -78,7 +78,7 @@ abstract class Collection implements ArrayAccess, Iterator
      * @param $key
      * @param $value
      */
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         $this->options[$key] = $value;
     }
@@ -88,7 +88,7 @@ abstract class Collection implements ArrayAccess, Iterator
      * @param string $key
      * @return mixed|null
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         if (!$this->has($key)) {
             return null;
