@@ -1,7 +1,7 @@
 <?php
 
 
-namespace VildanHakanaj\Options;
+namespace VildanHakanaj;
 
 class Options extends Collection
 {
@@ -123,7 +123,7 @@ class Options extends Collection
      * Convert the options into json
      * @return false|string
      */
-    public function toJson($flags = null): mixed{
+    public function toJson($flags = false): mixed{
         return json_encode($this->options, $flags);
     }
 }

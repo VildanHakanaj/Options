@@ -1,7 +1,7 @@
 <?php
 
 
-namespace VildanHakanaj\Options;
+namespace VildanHakanaj;
 
 
 use ArrayAccess;

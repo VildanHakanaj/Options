@@ -1,9 +1,9 @@
 <?php
 
-namespace Unit;
+namespace VildanHakanaj\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
-use VildanHakanaj\Options\Options;
+use VildanHakanaj\Options;
 
 class OptionsTest extends TestCase
 {
