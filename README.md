@@ -14,7 +14,7 @@ composer require vildanhakanaj/php-options
 
 ### Instantiate
 ```php
-use VildanHakanaj\Options\Options;
+use VildanHakanaj\Options;
 
 $options = new Options([
     "key1" => "value1",
