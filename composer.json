@@ -23,7 +23,7 @@
         "phpunit/phpunit": "^9.5"
     },
     "require": {
-        "php": "^7.4 || ^8.2",
+        "php": "^8.2",
         "ext-json": "*"
     },
     "minimum-stability": "dev"

@@ -49,7 +49,7 @@ class Options extends Collection
      */
     public function filter(callable $func = null): array
     {
-        if(is_null($func)){
+        if (is_null($func)) {
             return array_filter($this->options);
         }
 
@@ -74,7 +74,7 @@ class Options extends Collection
      */
     public function addIfUnique(string $key, $value): Options
     {
-        if($this->has($key)){
+        if ($this->has($key)) {
             return $this;
         }
 
@@ -119,11 +119,33 @@ class Options extends Collection
         return $this;
     }
 
+    public function isEnabled(string $key, bool $default = false): bool
+    {
+        return $this->boolean($key, $default);
+
+    }
+
+    public function isDisabled(string $key, bool $default = true): bool
+    {
+        return $this->boolean($key, $default);
+    }
+
+    public function boolean(string $key, bool $default = true): bool
+    {
+        if (!$this->has($key)) {
+            return $default;
+        }
+
+        return filter_var($this->options[$key], FILTER_VALIDATE_BOOL);
+    }
+
+
     /**
      * Convert the options into json
      * @return false|string
      */
-    public function toJson($flags = false): mixed{
+    public function toJson($flags = false): mixed
+    {
         return json_encode($this->options, $flags);
     }
 }

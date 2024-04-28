@@ -234,6 +234,48 @@ class OptionsTest extends TestCase
         ], $options->filter());
     }
 
+
+    /** @test */
+    public function it_can_determine_if_a_field_is_enabled(){
+        $this->options->override([
+            'featureA' => true,
+            'featureB' => 'Yes',
+            'featureC' => 'On',
+            'featureD' => 1,
+        ]);
+
+        $this->assertTrue($this->options->isEnabled('featureA'));
+        $this->assertTrue($this->options->isEnabled('featureB'));
+        $this->assertTrue($this->options->isEnabled('featureC'));
+        $this->assertTrue($this->options->isEnabled('featureD'));
+    }
+
+    /** @test */
+    public function it_can_determine_if_a_field_is_disabled(){
+        $this->options->override([
+            'featureA' => false,
+            'featureB' => 'No',
+            'featureC' => 'Off',
+            'featureD' => 0,
+        ]);
+
+        $this->assertFalse($this->options->isDisabled('featureA'));
+        $this->assertFalse($this->options->isDisabled('featureB'));
+        $this->assertFalse($this->options->isDisabled('featureC'));
+        $this->assertFalse($this->options->isDisabled('featureD'));
+    }
+
+
+    /** @test */
+    public function it_returns_the_default_for_is_enabled_and_disabled_for_non_existing_keys(){
+        $this->assertTrue($this->options->isEnabled('non-existing-key', true));
+        $this->assertFalse($this->options->isEnabled('non-existing-key'));
+
+        $this->assertTrue($this->options->isDisabled('non-existing-key'));
+        $this->assertFalse($this->options->isDisabled('non-existing-key', false));
+    }
+
+
     /** @test */
     public function it_can_filter_options_by_key(){
 
