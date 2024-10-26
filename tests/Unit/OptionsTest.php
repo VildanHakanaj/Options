@@ -1,308 +1,250 @@
 <?php
 
-namespace VildanHakanaj\Test\Unit;
-
-use PHPUnit\Framework\TestCase;
 use VildanHakanaj\Options;
 
-class OptionsTest extends TestCase
+
+beforeEach(function () {
+    $this->settings = new Options(data());
+});
+
+it('can create options from static constructor', function () {
+    $options = Options::fromArray([
+        "key1" => "value1",
+        "key2" => "value2"
+    ]);
+
+    expect($options)->toBeInstanceOf(Options::class);
+
+    expect($options->all())->toBe([
+        "key1" => "value1",
+        "key2" => "value2"
+    ]);
+});
+
+it('can get the options array', function () {
+    expect($this->settings->all())->toBe([
+        "key1" => "value1",
+        "key2" => "value2",
+        "key3" => "value3",
+        "key4" => "value4",
+    ]);
+});
+
+it('can only set key if not present in array', function () {
+    $instance = $this->settings->addIfUnique("uniqueKey", "uniqueValue");
+    $instance2 = $this->settings->addIfUnique("key1", "alreadyExists");
+
+    expect($instance)->toBeInstanceOf(Options::class);
+    expect($instance2)->toBeInstanceOf(Options::class);
+
+    expect($this->settings->get("uniqueKey"))->toBe("uniqueValue");
+    $this->assertNotSame("alreadyExists", $this->settings->get("key1"));
+    expect($this->settings->get("key1"))->toBe("value1");
+});
+
+it('can get all the keys', function () {
+    expect($this->settings->keys())->toBe([
+        "key1",
+        "key2",
+        "key3",
+        "key4",
+    ]);
+});
+
+it('can get all the values', function () {
+    $result = $this->settings->values();
+
+    expect($result)->toBe([
+        "value1",
+        "value2",
+        "value3",
+        "value4",
+    ]);
+});
+
+it('can get a item by key', function () {
+    expect($this->settings->get("key1"))->toBe("value1");
+});
+
+it('returns null if key not found', function () {
+    expect($this->settings->get("noKey"))->toBeNull();
+});
+
+it('check if the options has the key', function () {
+    expect($this->settings->has("key1"))->toBeTrue();
+    expect($this->settings->has("notFound"))->toBeFalse();
+});
+
+it('can get value using magic getters', function () {
+    expect($this->settings->key1)->toBe("value1");
+    expect($this->settings->notFound)->toBeNull();
+});
+
+it('can set value using magic setter', function () {
+    $this->settings->magicKey = "magicValue";
+    expect($this->settings->get("magicKey"))->toBe("magicValue");
+});
+
+it('can get a value using options as array', function () {
+    expect($this->settings["key1"])->toBe("value1");
+});
+
+it('can check if key isset as an array', function () {
+    expect(isset($this->settings["key1"]))->toBeTrue();
+    expect(isset($this->settings["notFound"]))->toBeFalse();
+});
+
+it('can check set key value as array', function () {
+    $this->settings["newKey"] = "newValue";
+    expect($this->settings->get("newKey"))->toBe("newValue");
+});
+
+it('can unset key from options as array', function () {
+    unset($this->settings["key1"]);
+    expect($this->settings->get("key1"))->toBeNull();
+});
+
+it('can merge an array', function () {
+    $options = $this->settings->merge([
+        "key2" => "override2",
+        "key3" => "value3"
+    ]);
+
+    expect($options)->toBeInstanceOf(Options::class);
+
+    expect($this->settings->all())->toBe([
+        "key1" => "value1",
+        "key2" => "override2",
+        "key3" => "value3",
+        "key4" => "value4",
+    ]);
+});
+
+it('can merge a key value', function () {
+    $options = $this->settings
+        ->mergeKey("newKey", "newValue")
+        ->mergeKey("key1", "overrideValue1");
+    expect($options)->toBeInstanceOf(Options::class);
+    $results = $options->all();
+
+    expect($results)->toBe([
+        "key1" => "overrideValue1",
+        "key2" => "value2",
+        "key3" => "value3",
+        "key4" => "value4",
+        "newKey" => "newValue"
+    ]);
+});
+
+it('can override the options with the given array', function () {
+    $result = $this->settings->override([
+        "key" => "value"
+    ])->all();
+
+    expect($result)->toBe(["key" => "value"]);
+});
+
+it('can loop over options in foreach', function () {
+    $options = new Options([
+        "showRightRail" => true,
+        "pageTitle" => "Page Title"
+    ]);
+
+    $result = [];
+
+    foreach ($options as $key => $value) {
+        $result[$key] = $value;
+    }
+
+    expect($result)->toBe(["showRightRail" => true, "pageTitle" => "Page Title"]);
+});
+
+it('can convert options into json', function () {
+    $json = $this->settings->toJson();
+    expect($json)->toBeJson();
+    expect($json)->toBe('{"key1":"value1","key2":"value2","key3":"value3","key4":"value4"}');
+});
+
+it('can filter options array', function () {
+    $options = Options::fromArray([
+        "key1" => false,
+        "key2" => true,
+        "key3" => "value1",
+        "key4" => 0,
+        "key5" => 1
+    ]);
+
+    expect($options->filter(fn($option) => !$option))->toBe([
+        "key1" => false,
+        "key4" => 0,
+    ]);
+
+    expect($options->filter())->toBe([
+        "key2" => true,
+        "key3" => "value1",
+        "key5" => 1,
+    ]);
+});
+
+it('can determine if a field is enabled', function () {
+    $this->settings->override([
+        'featureA' => true,
+        'featureB' => 'Yes',
+        'featureC' => 'On',
+        'featureD' => 1,
+    ]);
+
+    expect($this->settings->isEnabled('featureA'))->toBeTrue();
+    expect($this->settings->isEnabled('featureB'))->toBeTrue();
+    expect($this->settings->isEnabled('featureC'))->toBeTrue();
+    expect($this->settings->isEnabled('featureD'))->toBeTrue();
+});
+
+it('can determine if a field is disabled', function () {
+    $this->settings->override([
+        'featureA' => false,
+        'featureB' => 'No',
+        'featureC' => 'Off',
+        'featureD' => 0,
+    ]);
+
+    expect($this->settings->isDisabled('featureA'))->toBeFalse();
+    expect($this->settings->isDisabled('featureB'))->toBeFalse();
+    expect($this->settings->isDisabled('featureC'))->toBeFalse();
+    expect($this->settings->isDisabled('featureD'))->toBeFalse();
+});
+
+it('returns the default for is enabled and disabled for non existing keys', function () {
+    expect($this->settings->isEnabled('non-existing-key', true))->toBeTrue();
+    expect($this->settings->isEnabled('non-existing-key'))->toBeFalse();
+
+    expect($this->settings->isDisabled('non-existing-key'))->toBeTrue();
+    expect($this->settings->isDisabled('non-existing-key', false))->toBeFalse();
+});
+
+it('can filter options by key', function () {
+    $this->settings->merge([
+        "key11" => "value11",
+        "key123" => "value123"
+    ]);
+
+    $filteredOptions = $this->settings->filterByKey(function($key){
+        return strpos($key, 'key1') !== false;
+    });
+
+    expect($filteredOptions)->toBe([
+        "key1" => "value1",
+        "key11" => "value11",
+        "key123" => "value123"
+    ]);
+});
+
+function data(): array
 {
-    protected Options $options;
-
-    protected function setUp(): void
-    {
-        $this->options = new Options($this->data());
-    }
-
-    /** @test */
-    public function it_can_create_options_from_static_constructor(){
-        $options = Options::fromArray([
-            "key1" => "value1",
-            "key2" => "value2"
-        ]);
-
-        $this->assertInstanceOf(Options::class, $options);
-
-        $this->assertSame([
-            "key1" => "value1",
-            "key2" => "value2"
-        ], $options->all());
-    }
-
-    /** @test */
-    public function it_can_get_the_options_array()
-    {
-        $this->assertSame([
-            "key1" => "value1",
-            "key2" => "value2",
-            "key3" => "value3",
-            "key4" => "value4",
-        ], $this->options->all());
-
-    }
-
-    /** @test */
-    public function it_can_only_set_key_if_not_present_in_array()
-    {
-        $instance = $this->options->addIfUnique("uniqueKey", "uniqueValue");
-        $instance2 = $this->options->addIfUnique("key1", "alreadyExists");
-
-        $this->assertInstanceOf(Options::class, $instance);
-        $this->assertInstanceOf(Options::class, $instance2);
-
-        $this->assertSame("uniqueValue", $this->options->get("uniqueKey"));
-        $this->assertNotSame("alreadyExists", $this->options->get("key1"));
-        $this->assertSame("value1", $this->options->get("key1"));
-    }
-
-    /** @test */
-    public function it_can_get_all_the_keys()
-    {
-        $this->assertSame([
-            "key1",
-            "key2",
-            "key3",
-            "key4",
-        ], $this->options->keys());
-    }
-
-    /** @test */
-    public function it_can_get_all_the_values()
-    {
-        $result = $this->options->values();
-
-        $this->assertSame([
-            "value1",
-            "value2",
-            "value3",
-            "value4",
-        ], $result);
-    }
-
-    /** @test */
-    public function it_can_get_a_item_by_key()
-    {
-        $this->assertSame("value1", $this->options->get("key1"));
-    }
-
-    /** @test */
-    public function it_returns_null_if_key_not_found()
-    {
-        $this->assertNull($this->options->get("noKey"));
-    }
-
-    /** @test */
-    public function it_check_if_the_options_has_the_key()
-    {
-        $this->assertTrue($this->options->has("key1"));
-        $this->assertFalse($this->options->has("notFound"));
-    }
-
-    /** @test */
-    public function it_can_get_value_using_magic_getters()
-    {
-        $this->assertSame("value1", $this->options->key1);
-        $this->assertNull($this->options->notFound);
-    }
-
-    /** @test */
-    public function it_can_set_value_using_magic_setter()
-    {
-        $this->options->magicKey = "magicValue";
-        $this->assertSame("magicValue", $this->options->get("magicKey"));
-    }
-
-    /** @test */
-    public function it_can_get_a_value_using_options_as_array()
-    {
-        $this->assertSame("value1", $this->options["key1"]);
-    }
-
-    /** @test */
-    public function it_can_check_if_key_isset_as_an_array()
-    {
-        $this->assertTrue(isset($this->options["key1"]));
-        $this->assertFalse(isset($this->options["notFound"]));
-    }
-
-    /** @test */
-    public function it_can_check_set_key_value_as_array()
-    {
-        $this->options["newKey"] = "newValue";
-        $this->assertSame("newValue", $this->options->get("newKey"));
-    }
-
-    /** @test */
-    public function it_can_unset_key_from_options_as_array()
-    {
-        unset($this->options["key1"]);
-        $this->assertNull($this->options->get("key1"));
-    }
-
-    /** @test */
-    public function it_can_merge_an_array()
-    {
-        $options = $this->options->merge([
-            "key2" => "override2",
-            "key3" => "value3"
-        ]);
-
-        $this->assertInstanceOf(Options::class, $options);
-
-        $this->assertSame([
-            "key1" => "value1",
-            "key2" => "override2",
-            "key3" => "value3",
-            "key4" => "value4",
-        ], $this->options->all());
-    }
-
-    /** @test */
-    public function it_can_merge_a_key_value()
-    {
-        $options = $this->options
-            ->mergeKey("newKey", "newValue")
-            ->mergeKey("key1", "overrideValue1");
-        $this->assertInstanceOf(Options::class, $options);
-        $results = $options->all();
-
-        $this->assertSame([
-            "key1" => "overrideValue1",
-            "key2" => "value2",
-            "key3" => "value3",
-            "key4" => "value4",
-            "newKey" => "newValue"
-        ], $results);
-    }
-
-    /** @test */
-    public function it_can_override_the_options_with_the_given_array()
-    {
-
-        $result = $this->options->override([
-            "key" => "value"
-        ])->all();
-
-        $this->assertSame(["key" => "value"], $result);
-    }
-
-    /** @test */
-    public function it_can_loop_over_options_in_foreach()
-    {
-        $options = new Options([
-            "showRightRail" => true,
-            "pageTitle" => "Page Title"
-        ]);
-
-        $result = [];
-
-        foreach ($options as $key => $value) {
-            $result[$key] = $value;
-        }
-
-        $this->assertSame(["showRightRail" => true, "pageTitle" => "Page Title"], $result);
-
-    }
-
-    /** @test */
-    public function it_can_convert_options_into_json()
-    {
-        $json = $this->options->toJson();
-        $this->assertJson($json);
-        $this->assertSame('{"key1":"value1","key2":"value2","key3":"value3","key4":"value4"}', $json);
-    }
-
-    /** @test */
-    public function it_can_filter_options_array(){
-        $options = Options::fromArray([
-            "key1" => false,
-            "key2" => true,
-            "key3" => "value1",
-            "key4" => 0,
-            "key5" => 1
-        ]);
-
-        $this->assertSame([
-            "key1" => false,
-            "key4" => 0,
-        ], $options->filter(fn($option) => !$option));
-
-        $this->assertSame([
-            "key2" => true,
-            "key3" => "value1",
-            "key5" => 1,
-        ], $options->filter());
-    }
-
-
-    /** @test */
-    public function it_can_determine_if_a_field_is_enabled(){
-        $this->options->override([
-            'featureA' => true,
-            'featureB' => 'Yes',
-            'featureC' => 'On',
-            'featureD' => 1,
-        ]);
-
-        $this->assertTrue($this->options->isEnabled('featureA'));
-        $this->assertTrue($this->options->isEnabled('featureB'));
-        $this->assertTrue($this->options->isEnabled('featureC'));
-        $this->assertTrue($this->options->isEnabled('featureD'));
-    }
-
-    /** @test */
-    public function it_can_determine_if_a_field_is_disabled(){
-        $this->options->override([
-            'featureA' => false,
-            'featureB' => 'No',
-            'featureC' => 'Off',
-            'featureD' => 0,
-        ]);
-
-        $this->assertFalse($this->options->isDisabled('featureA'));
-        $this->assertFalse($this->options->isDisabled('featureB'));
-        $this->assertFalse($this->options->isDisabled('featureC'));
-        $this->assertFalse($this->options->isDisabled('featureD'));
-    }
-
-
-    /** @test */
-    public function it_returns_the_default_for_is_enabled_and_disabled_for_non_existing_keys(){
-        $this->assertTrue($this->options->isEnabled('non-existing-key', true));
-        $this->assertFalse($this->options->isEnabled('non-existing-key'));
-
-        $this->assertTrue($this->options->isDisabled('non-existing-key'));
-        $this->assertFalse($this->options->isDisabled('non-existing-key', false));
-    }
-
-
-    /** @test */
-    public function it_can_filter_options_by_key(){
-
-        $this->options->merge([
-            "key11" => "value11",
-            "key123" => "value123"
-        ]);
-
-        $filteredOptions = $this->options->filterByKey(function($key){
-            return strpos($key, 'key1') !== false;
-        });
-
-        $this->assertSame([
-            "key1" => "value1",
-            "key11" => "value11",
-            "key123" => "value123"
-        ], $filteredOptions);
-
-    }
-
-    protected function data(): array
-    {
-        return [
-            "key1" => "value1",
-            "key2" => "value2",
-            "key3" => "value3",
-            "key4" => "value4",
-        ];
-    }
+    return [
+        "key1" => "value1",
+        "key2" => "value2",
+        "key3" => "value3",
+        "key4" => "value4",
+    ];
 }
